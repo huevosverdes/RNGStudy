@@ -1,5 +1,5 @@
 # RNGStudy
-A study of various topics in RNG. Code in C, C++ and Python.
+A study of various topics in RNG. Code in C, C++ and Python. No libraries or dependencies needed.
 
 I conceptualize two parts to random number generation:
 1. The core RNG which generates some number of random bits
@@ -26,7 +26,7 @@ Also, for the interested student, the C versions of the cores show how polymorph
 
 ## RNG Transformations
 Usually 31 random bits aren't useful. Instead we want to get a random value in some range or do other things. Here we explore a few ideas:
-- **Uniform Distribution**: Every value in the specified range is equally likely. Some other usefull tidbits included here.
+- **Uniform Distribution**: Every value in the specified range is equally likely. Some other useful tidbits included here.
 - **Normal Distribution**: This is your bell curve, with a mean and standard deviation. Also called a Gauss distrubution.
 - **Vose Weighted Distribution**: This is useful for creating weighted dice or loot tables.
 - **Perlin Noise**: Fancy noise creation used in an awful lot of graphics applications.
