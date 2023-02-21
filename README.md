@@ -1,14 +1,14 @@
-# RNGStudy
-A study of various topics in RNG. Code in C, C++ and Python. No libraries or dependencies needed.
+# Random Number Generation Study
+A study of various topics in Random Number Generation (RNG). Code is provided in C, C++ and Python with no dependencies.
 
-I conceptualize two parts to random number generation:
-1. The core RNG which generates some number of random bits
-2. The RNG transformations that give us useful numbers
+I conceptualize RNG in two parts:
+1. The core which generates some number of random bits
+2. The transformations that give us useful values from the random bits provided by the core
 
 ## Core RNG
-The main goal was to have random number generation cores that would always generate the same sequence of numbers no matter what language it was built in. I was inspired by the GBFlip paper which gives some testing values for a given seed at the first and 135th values generated. If you get the expected values, you coded it right. To the best of my ability I verified each core and provide the same testing for each core.
+The main goal was to have random number generation cores that would always generate the same sequence of numbers no matter what language it was built in. I was inspired by the GBFlip paper which gives some testing values for a given seed at the first and 135th values generated. If you get the expected values, you coded it right. To the best of my ability I verified each core and provide value tests for each.
 
-For this study I stuck with 31 bit signed integers, so they will always be positive. The transformations need to know what bits are being generated or they will not work correctly and I want all the cores to be interchangeable in the transformations as we explore various ideas. Some RNG cores demonstrated here normally generate 32 bits, so the most significant bit was stripped in these cases.
+For this study I stuck with 31 bit signed integer cores. The transformations need to know what bits are being generated or they will not work correctly. For example, if we provide a 32 bit random number and put it into the 31 bit transformations, the results would be wrong. Also, I want all the cores to be interchangeable in the transformations as we explore various ideas. Some RNG cores here would normally generate 32 bits, so the most significant bit was stripped in these cases.
 
 Some of the cores are things I found in the far, dusty corners of the internet, while others are used today in popular languages and libraries:
 - [GBFlip](https://tex.loria.fr/sgb/gb_flip.pdf)
@@ -22,7 +22,7 @@ Some of the cores are things I found in the far, dusty corners of the internet, 
 
 Any core that needs another RNG core to intialize itself uses the Linear Congruential core.
 
-Also, for the interested student, the C versions of the cores show how polymorphism and vtables work without an object oriented language.
+Also, for the interested student, the C versions of the cores show how inheritance, polymorphism and vtables work without an object oriented language.
 
 ## RNG Transformations
 Usually 31 random bits aren't useful. Instead we want to get a random value in some range or do other things. Here we explore a few ideas:
