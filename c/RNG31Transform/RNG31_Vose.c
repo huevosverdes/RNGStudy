@@ -84,8 +84,6 @@ int32_t rng31Vose_next(RNG31_Vose *vrng)
 void rng31Vose_queue_init(RNG31_VoseQueue *queue, int capacity)
 {
     queue->buffer = (int*)malloc(sizeof(int) * capacity);
-    for(int index = 0; index < capacity; ++index) /* TODO: Remove*/
-        queue->buffer[index] = 9;
     queue->count = 0;
     queue->offset = 0;
     queue->capacity = capacity;
@@ -110,7 +108,6 @@ int rng31Vose_queue_dequeue(RNG31_VoseQueue *queue)
 {
     assert(queue->count > 0);
     int result = queue->buffer[queue->offset];
-    queue->buffer[queue->offset] = 9; /* TODO: Remove*/
     if(--(queue->count) == 0)
         queue->offset = 0;
     else

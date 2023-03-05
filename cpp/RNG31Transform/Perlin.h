@@ -6,7 +6,8 @@
 #include <cassert>
 
 #include "../Ease.h"
-#include "../RNG31Core/AbstractRNGCore.h"
+#include "../NoiseBuffer2D.h"
+#include "../RNG31Transform/Uniform.h"
 #include "Uniform.h"
 
 namespace RNG31
@@ -16,7 +17,7 @@ namespace RNG31
         // https://rosettacode.org/wiki/Perlin_noise#C
 
     public:
-        Perlin(AbstractRNGCore *rng);
+        Perlin(RNG31::Uniform *urng);
         ~Perlin();
 
         Ease::EasingMethod getEasingMethod() const;
@@ -25,15 +26,15 @@ namespace RNG31
         void reset();
         void shuffle();
 
-        // void fill(NoiseBuffer *buffer, double x, double y=0.0, double z=0.0) const;
-        // void layeredFill(NoiseBuffer *buffer, int layerCount, double layerScale, double signalAttenuation, double x, double y=0.0, double z=0.0) const;
+        void fill(NoiseBuffer2D *buffer, double xScale, double yScale) const;
+        void layeredFill(NoiseBuffer2D *buffer, int layerCount, double layerScale, double signalAttenuation, double xScale, double yScale) const;
 
     private:
         const static uint8_t PERMUTATIONS[];
         uint8_t m_permutations[512];
         Ease::EasingMethod m_easingMethod;
 
-        Uniform m_urng;
+        Uniform *m_urng;
 
         double sample(double x, double y, double z) const;
         double fade(double t) const;

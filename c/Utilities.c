@@ -73,6 +73,7 @@ void message(double timeout, const char *msg, ...)
     vprintf(msg, args);
     va_end(args);
 
-    printf("\n"); fflush(stdout);
+    printf("\n");
+    fflush(stdout);
     /* sleep(timeout); */
 }

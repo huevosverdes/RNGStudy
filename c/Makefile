@@ -1,20 +1,24 @@
 COMPILER = gcc
 FLAGS = -Wall -g --std=c99
-OBJS = AbstractRNG31Core.o				\
-       RNG31Core_GBFlip.o				\
-       RNG31Core_LinearCongruential.o	\
-       RNG31Core_Isaac.o				\
-       RNG31Core_MersenneTwister.o		\
-       RNG31Core_R250.o					\
-       RNG31Core_R250_R521.o			\
-       RNG31_Uniform.o					\
-       RNG31_Normal.o					\
-       RNG31_Vose.o						\
-       RNG31_Perlin.o					\
-       Ease.o                           \
+OBJS = AbstractRNG31Core.o            \
+       RNG31Core_GBFlip.o             \
+       RNG31Core_LinearCongruential.o \
+       RNG31Core_Isaac.o              \
+       RNG31Core_MersenneTwister.o    \
+       RNG31Core_R250.o               \
+       RNG31Core_R250_R521.o          \
+       RNG31_Uniform.o                \
+       RNG31_Normal.o                 \
+       RNG31_Vose.o                   \
+       RNG31_Perlin.o                 \
+       Ease.o                         \
+       Color.o                        \
+       Image.o                        \
+       NoiseBuffer2D.o                \
+       BMPWriter.o                    \
        Utilities.o
 
-all : test BuffonsNeedle MonteHall
+all : test BuffonsNeedle MonteHall ChaosGame
 	./test.exe
 
 # Tests/Examples
@@ -27,11 +31,26 @@ BuffonsNeedle : BuffonsNeedle.c $(OBJS)
 MonteHall : MonteHall.c $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
+ChaosGame : ChaosGame.c $(OBJS)
+	$(COMPILER) $(FLAGS) $^ -o $@.exe
+
 # Misc
 Ease.o : Ease.h Ease.c
 	$(COMPILER) $(FLAGS) $^ -c
 
 Utilities.o : Utilities.h Utilities.c
+	$(COMPILER) $(FLAGS) $^ -c
+
+Color.o : Color.h Color.c
+	$(COMPILER) $(FLAGS) $^ -c
+
+Image.o : Image.h Image.c
+	$(COMPILER) $(FLAGS) $^ -c
+
+NoiseBuffer2D.o : NoiseBuffer2D.h NoiseBuffer2D.c
+	$(COMPILER) $(FLAGS) $^ -c
+
+BMPWriter.o : BMPWriter.h BMPWriter.c
 	$(COMPILER) $(FLAGS) $^ -c
 
 # 31-bit Random Number Transforms
@@ -71,4 +90,4 @@ AbstractRNG31Core.o : RNG31Core/AbstractRNG31Core.h RNG31Core/AbstractRNG31Core.
 
 # Utilities
 clean :
-	rm -rf *.o *.gch *.exe *.stackdump RNG31Core/*.gch RNG31Transform/*.gch
+	rm -rf *.o *.gch *.bmp *.exe *.stackdump RNG31Core/*.gch RNG31Transform/*.gch

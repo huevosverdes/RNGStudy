@@ -2,6 +2,8 @@
 
 using namespace RNG31;
 
+void perlin_swap_permutation(void *permutations, int index1, int index2);
+
 const uint8_t Perlin::PERMUTATIONS[] = {
     151, 160, 137,  91,  90,  15, 131,  13, 201,  95,  96,  53, 194, 233,   7, 225, 140,  36, 103,  30,
      69, 142,   8,  99,  37, 240,  21,  10,  23, 190,   6, 148, 247, 120, 234,  75,   0,  26, 197,  62,
@@ -18,9 +20,9 @@ const uint8_t Perlin::PERMUTATIONS[] = {
     222, 114,  67,  29,  24,  72, 243, 141, 128, 195,  78,  66, 215,  61, 156, 180
 };
 
-Perlin::Perlin(AbstractRNGCore *rng) :
-    m_urng(rng)
+Perlin::Perlin(RNG31::Uniform *urng)
 {
+    m_urng = urng;
     m_easingMethod = Ease::EasingMethod::SMOOTHERSTEP;
     reset();
 }
@@ -50,90 +52,62 @@ void Perlin::reset()
 
 void Perlin::shuffle()
 {
-    // TODO: Shuffle first 256
+    // Shuffle the first half
+    m_urng->shuffle(m_permutations, 256, &perlin_swap_permutation);
+
+    // Copy first half to the second half
     for(int index = 0; index < 256; ++index)
         m_permutations[index + 256] = m_permutations[index];
 }
 
-// void Perlin::fill(NoiseBuffer *buffer, double x, double y, double z) const
-// {
-//     if(buffer->is2D()) {
-//         int rowCount = buffer->height();
-//         int colCount = buffer->width();
-//         double xScale = x;
-//         double yScale = y;
-//         assert(xScale > 0.0);
-//         assert(yScale > 0.0);
+void Perlin::fill(NoiseBuffer2D *buffer, double xScale, double yScale) const
+{
+    uint32_t rowCount = buffer->height();
+    uint32_t colCount = buffer->width();
+    assert(xScale > 0.0);
+    assert(yScale > 0.0);
 
-//         for(int row = 0; row < rowCount; ++row)
-//         {
-//             double scaledY = yScale * row / rowCount;
-//             for(int col = 0; col < colCount; ++col)
-//                 buffer->set(row, col, sample(xScale * col / colCount, scaledY, z));
-//         }
-//     } else {
-//         int length = buffer->length();
-//         double xScale = x;
-//         assert(xScale > 0.0);
+    for(uint32_t row = 0; row < rowCount; ++row)
+    {
+        double scaledY = yScale * row / rowCount;
+        for(uint32_t col = 0; col < colCount; ++col)
+            buffer->set(row, col, sample(xScale * col / colCount, scaledY, 0.0));
+    }
 
-//         for(int index = 0; index < length; ++index)
-//             buffer->set(index, sample(xScale * index / length, y, z));
-//     }
-// }
+    buffer->normalize();
+}
 
-// void Perlin::layeredFill(NoiseBuffer *buffer, int layerCount, double layerScale, double signalAttenuation, double x, double y, double z) const
-// {
-//     double signalFactor = 1.0 - signalAttenuation;
-//     double signalStrength = 1.0;
+void Perlin::layeredFill(NoiseBuffer2D *buffer, int layerCount, double layerScale, double signalAttenuation, double xScale, double yScale) const
+{
+    double signalFactor = 1.0 - signalAttenuation;
+    double signalStrength = 1.0;
 
-//     if(buffer->is2D())
-//     {
-//         int rowCount = buffer->height();
-//         int colCount = buffer->width();
-//         double xScale = x;
-//         double yScale = y;
-//         assert(xScale > 0.0);
-//         assert(yScale > 0.0);
+    int rowCount = buffer->height();
+    int colCount = buffer->width();
+    assert(xScale > 0.0);
+    assert(yScale > 0.0);
 
-//         // First iteration: No additional scaling or signal attenuation
-//         // Saves time with the multiplications in the first layer
-//         for(int row = 0; row < rowCount; ++row) {
-//             double scaledY = yScale * row / rowCount;
-//             for(int col = 0; col < colCount; ++col)
-//                 buffer->set(row, col, sample(xScale * col / colCount, scaledY, z));
-//         }
+    // First iteration: No additional scaling or signal attenuation
+    for(int row = 0; row < rowCount; ++row) {
+        double scaledY = yScale * row / rowCount;
+        for(int col = 0; col < colCount; ++col)
+            buffer->set(row, col, sample(xScale * col / colCount, scaledY, 0.0));
+    }
 
-//         // The rest of the iterations
-//         for(int iteration = 1; iteration < layerCount; ++iteration) {
-//             xScale *= layerScale;
-//             yScale *= layerScale;
-//             signalStrength *= signalFactor;
-//             for(int row = 0; row < rowCount; ++row) {
-//                 double scaledY = yScale * row / rowCount;
-//                 for(int col = 0; col < colCount; ++col)
-//                     buffer->add(row, col, signalStrength * sample(xScale * col / colCount, scaledY, z));
-//             }
-//         }
-//     } else {
-//         int length = buffer->length();
-//         double xScale = x;
-//         assert(xScale > 0.0);
+    // The rest of the iterations
+    for(int iteration = 1; iteration < layerCount; ++iteration) {
+        xScale *= layerScale;
+        yScale *= layerScale;
+        signalStrength *= signalFactor;
+        for(int row = 0; row < rowCount; ++row) {
+            double scaledY = yScale * row / rowCount;
+            for(int col = 0; col < colCount; ++col)
+                buffer->set(row, col, buffer->at(row, col) + signalStrength * sample(xScale * col / colCount, scaledY, 0.0));
+        }
+    }
 
-//         // First iteration: No additional scaling or signal attenuation
-//         // Saves time with the multiplications in the first layer
-//         for(int index = 0; index < length; ++index)
-//             buffer->set(index, sample(xScale * index / length, y, z));
-
-//         // The rest of the iterations
-//         for(int iteration = 1; iteration < layerCount; ++iteration) {
-//             xScale *= layerScale;
-//             signalStrength *= signalFactor;
-
-//             for(int index = 0; index < length; ++index)
-//                 buffer->add(index, signalStrength * sample(xScale * index / length, y, z));
-//         }
-//     }
-// }
+    buffer->normalize();
+}
 
 double Perlin::sample(double x, double y, double z) const
 {
@@ -181,4 +155,14 @@ double Perlin::grad(int hash, double x, double y, double z)
     double u = h<8 ? x : y;
     double v = h<4 ? y : h==12||h==14 ? x : z;
     return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
+}
+
+// Just a helper function
+void perlin_swap_permutation(void *permutations, int index1, int index2)
+{
+    uint8_t *p = (uint8_t*)permutations;
+    uint8_t value1 = p[index1];
+
+    p[index1] = p[index2];
+    p[index2] = value1;
 }

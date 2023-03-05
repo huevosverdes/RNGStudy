@@ -2,10 +2,6 @@ import math
 
 from RNG31Core.AbstractRNG31Core import AbstractRNG31Core
 
-# TODO: Poisson
-# - https://a5huynh.github.io/posts/2019/poisson-disk-sampling/
-# - https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
-# - https://www.youtube.com/watch?v=flQgnCUxHlw
 
 class Uniform:
     """

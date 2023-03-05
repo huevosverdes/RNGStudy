@@ -1,5 +1,5 @@
-from RNG31Core.AbstractRNG31Core import AbstractRNG31Core
 from RNG31Transform.Uniform import Uniform
+from NoiseBuffer2D import NoiseBuffer2D
 from Ease import Ease
 
 import math
@@ -41,82 +41,58 @@ class Perlin:
     0.2921388055178511
     """
 
-    def __init__(self, rng: AbstractRNG31Core):
-        assert(rng is not None and isinstance(rng, AbstractRNG31Core))
-        self.__urng = Uniform(rng)
+    def __init__(self, urng: Uniform):
+        assert(urng is not None and isinstance(urng, Uniform))
+        self.__urng = urng
         self.__permutations = []
         self.__easingMethod = Ease.SMOOTHERSTEP
         self.reset()
 
-    # def fill(self, noise: NoiseBuffer, x, y=0.0, z=0.0):
-    #     assert(noise is not None and isinstance(noise, NoiseBuffer))
-    #     if noise.is2D():
-    #         rowCount = noise.height()
-    #         colCount = noise.width()
-    #         xScale = x
-    #         yScale = y
-    #         assert(xScale > 0.0)
-    #         assert(yScale > 0.0)
+    def fill(self, noise: NoiseBuffer2D, xScale, yScale):
+        assert(noise is not None and isinstance(noise, NoiseBuffer2D))
+        assert(xScale > 0.0)
+        assert(yScale > 0.0)
 
-    #         for row in range(rowCount):
-    #             scaledY = yScale * row / rowCount
-    #             for col in range(colCount):
-    #                 noise.set(self.sample(xScale * col / colCount, scaledY, z), row, col)
+        rowCount = noise.height()
+        colCount = noise.width()
 
-    #     else:
-    #         length = noise.length()
-    #         xScale = x
-    #         assert(xScale > 0.0)
+        for row in range(rowCount):
+            scaledY = yScale * row / rowCount
+            for col in range(colCount):
+                noise.set(row, col, self.sample(xScale * col / colCount, scaledY, 0.0))
 
-    #         for index in range(length):
-    #             noise.set(self.sample(xScale * index / length, y, z), index)
+        noise.normalize()
 
-    # def layeredFill(self, noise: NoiseBuffer, layerCount, layerScale, signalAttenuation, x, y=0.0, z=0.0):
-    #     assert(noise is not None and isinstance(noise, NoiseBuffer))
-    #     signalFactor = 1.0 - signalAttenuation;
-    #     signalStrength = 1.0;
+    def layeredFill(self, noise: NoiseBuffer2D, layerCount, layerScale, signalAttenuation, xScale, yScale):
+        assert(noise is not None and isinstance(noise, NoiseBuffer))
+        assert(xScale > 0.0)
+        assert(yScale > 0.0)
+        signalFactor = 1.0 - signalAttenuation;
+        signalStrength = 1.0;
 
-    #     if noise.is2D():
-    #         rowCount = noise.height()
-    #         colCount = noise.width()
-    #         xScale = x
-    #         yScale = y
-    #         assert(xScale > 0.0)
-    #         assert(yScale > 0.0)
+        rowCount = noise.height()
+        colCount = noise.width()
 
-    #         # First iteration: No additional scaling or signal attenuation
-    #         # Saves time with the multiplications in the first layer
-    #         for row in range(rowCount):
-    #             scaledY = yScale * row / rowCount
-    #             for col in range(colCount):
-    #                 noise.set(self.sample(xScale * col / colCount, scaledY, z), row, col)
+        # First iteration: No additional scaling or signal attenuation
+        for row in range(rowCount):
+            scaledY = yScale * row / rowCount
+            for col in range(colCount):
+                noise.set(row, col, self.sample(xScale * col / colCount, scaledY, 0.0))
 
-    #         # The rest of the iterations
-    #         for iteration in range(1, layerCount):
-    #             xScale *= layerScale
-    #             yScale *= layerScale
-    #             signalStrength *= signalFactor
-    #             for row in range(rowCount):
-    #                 scaledY = yScale * row / rowCount
-    #                 for col in range(colCount):
-    #                     noise.add(signalStrength * self.sample(xScale * col / colCount, scaledY, z), row, col)
+        # The rest of the iterations
+        for iteration in range(1, layerCount):
+            xScale *= layerScale
+            yScale *= layerScale
+            signalStrength *= signalFactor
+            for row in range(rowCount):
+                scaledY = yScale * row / rowCount
+                for col in range(colCount):
+                    noise.set(
+                        row, col,
+                        (noise.at(row, col) +
+                         (signalStrength * self.sample(xScale * col / colCount, scaledY, 0.0), row, col)))
 
-    #     else:
-    #         length = noise.length()
-    #         xScale = x
-    #         assert(xScale > 0.0)
-
-    #         # First iteration: No additional scaling or signal attenuation
-    #         # Saves time with the multiplications in the first layer
-    #         for index in range(length):
-    #             noise.set(self.sample(xScale * index / length, y, z), index)
-
-    #         # The rest of the iterations
-    #         for iteration in range(1, layerCount):
-    #             xScale *= layerScale;
-    #             signalStrength *= signalFactor;
-    #             for index in range(length):
-    #                 noise.add(self.sample(xScale * index / length, y, z), index)
+        noise.normalize()
 
     def reset(self):
         self.__reset()
@@ -124,7 +100,7 @@ class Perlin:
 
     def shuffle(self):
         self.__reset()
-        # TODO: Shuffle things here
+        self.__urng.shuffle(self.__permutations)
         self.__permutations += self.__permutations
 
     def sample(self, x, y, z):

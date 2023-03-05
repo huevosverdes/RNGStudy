@@ -7,10 +7,6 @@
 
 #include "../RNG31Core/AbstractRNGCore.h"
 
-// TODO: Poisson
-// - https://a5huynh.github.io/posts/2019/poisson-disk-sampling/
-// - https://www.cs.ubc.ca/~rbridson/docs/bridson-siggraph07-poissondisk.pdf
-// - https://www.youtube.com/watch?v=flQgnCUxHlw
 
 namespace RNG31
 {

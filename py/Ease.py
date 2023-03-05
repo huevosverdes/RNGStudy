@@ -1,9 +1,5 @@
 import math
 
-# TODO: https://en.wikipedia.org/wiki/Logistic_function
-# TODO: https://en.wikipedia.org/wiki/Error_function
-# TODO: https://en.wikipedia.org/wiki/Sigmoid_function (Algebraic Functions)
-
 class Ease:
     """
     Pure static class to provide easing curves

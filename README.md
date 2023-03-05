@@ -27,10 +27,11 @@ Also, for the interested student, the C versions of the cores show how inheritan
 ## RNG Transformations
 Usually 31 random bits aren't useful. Instead we want to get a random value in some range or do other things. Here we explore a few ideas:
 - **Uniform Distribution**: Every value in the specified range is equally likely. Some other useful tidbits included here.
-- **Normal Distribution**: This is your bell curve, with a mean and standard deviation. Also called a Gauss distrubution.
-- **Vose Weighted Distribution**: This is useful for creating weighted dice or loot tables.
-- **Perlin Noise**: Fancy noise creation used in an awful lot of graphics applications.
+- **Normal Distribution**: This is a bell curve, with a mean and standard deviation. Also called a Gauss distrubution.
+- **Vose Weighted Distribution**: Used for creating weighted dice or loot tables.
+- **Perlin Noise**: Fancy noise creation used in many graphics applications.
 
 ## Demonstrations
 - [Buffon's Needle](https://en.wikipedia.org/wiki/Buffon%%27s_needle_problem): A probability problem with some interesting properties related to PI. We don't do the math, just an RNG simulation.
 - [Monte Hall Problem](https://en.wikipedia.org/wiki/Monty_Hall_problem): A counterintuitive probability problem. We don't do the math, just an RNG simulation.
+- [Chaos Game](https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle#Chaos_game): We use randomness to generate pretty pictures.

@@ -1,5 +1,7 @@
 #include "RNG31_Perlin.h"
 
+void perlin_swap_permutation(void *permutations, int index1, int index2);
+
 const uint8_t RNG31_PERLIN_PERMUTATIONS[] = {
     151, 160, 137,  91,  90,  15, 131,  13, 201,  95,  96,  53, 194, 233,   7, 225, 140,  36, 103,  30,
      69, 142,   8,  99,  37, 240,  21,  10,  23, 190,   6, 148, 247, 120, 234,  75,   0,  26, 197,  62,
@@ -21,11 +23,11 @@ double rng31Perlin_fade(const RNG31_Perlin *perlin, double t);
 double rng31Perlin_lerp(double t, double a, double b);
 double rng31Perlin_grad(int hash, double x, double y, double z);
 
-void rng31Perlin_init(RNG31_Perlin *perlin, AbstractRNG31Core *rng)
+void rng31Perlin_init(RNG31_Perlin *perlin, RNG31_Uniform *urng)
 {
     rng31Perlin_reset(perlin);
     perlin->easingMethod = SMOOTHERSTEP;
-    rng31Uniform_init(&(perlin->urng), rng);
+    perlin->urng = urng;
 }
 
 void rng31Perlin_reset(RNG31_Perlin *perlin)
@@ -38,99 +40,67 @@ void rng31Perlin_reset(RNG31_Perlin *perlin)
 
 void rng31Perlin_shuffle(RNG31_Perlin *perlin)
 {
-    /* TODO: Shuffle first 256 */
+    /* Shuffle the first half */
+    rng31Uniform_shuffle(perlin->urng, perlin->permutations, 256, &perlin_swap_permutation);
+
+    /* Copy first half to the second half */
     for(int index = 0; index < 256; ++index)
         perlin->permutations[index + 256] = perlin->permutations[index];
 }
 
-/* void rng31Perlin_fill(RNG31_Perlin *perlin, NoiseBuffer *buffer, double x, double y, double z) */
-/* { */
-/*     if(noiseBuffer_is2D(buffer)) */
-/*     { */
-/*         int rowCount = noiseBuffer_height(buffer); */
-/*         int colCount = noiseBuffer_width(buffer); */
-/*         double xScale = x; */
-/*         double yScale = y; */
-/*         assert(xScale > 0.0); */
-/*         assert(yScale > 0.0); */
+void rng31Perlin_fill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, double xScale, double yScale)
+{
+    int rowCount = buffer->height;
+    int colCount = buffer->width;
+    assert(xScale > 0.0);
+    assert(yScale > 0.0);
 
-/*         for(int row = 0; row < rowCount; ++row) */
-/*         { */
-/*             double scaledY = yScale * row / rowCount; */
-/*             for(int col = 0; col < colCount; ++col) */
-/*                 noiseBuffer_set2D(buffer, row, col, rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, z)); */
-/*         } */
-/*     } */
-/*     else */
-/*     { */
-/*         int length = noiseBuffer_length(buffer); */
-/*         double xScale = x; */
-/*         assert(xScale > 0.0); */
+    for(int row = 0; row < rowCount; ++row)
+    {
+        double scaledY = yScale * row / rowCount;
+        for(int col = 0; col < colCount; ++col)
+            noiseBuffer2D_setValue(buffer, row, col, rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, 0.0));
+    }
 
-/*         for(int index = 0; index < length; ++index) */
-/*             noiseBuffer_set1D(buffer, index, rng31Perlin_sample(perlin, xScale * index / length, y, z)); */
-/*     } */
-/* } */
+    noiseBuffer2D_normalize(buffer);
+}
 
-/* void rng31Perlin_layeredFill(RNG31_Perlin *perlin, NoiseBuffer *buffer, int layerCount, int layerScale, double signalAttenuation, double x, double y, double z) */
-/* { */
-/*     double signalFactor = 1.0 - signalAttenuation; */
-/*     double signalStrength = 1.0; */
+void rng31Perlin_layeredFill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, int layerCount, int layerScale, double signalAttenuation, double xScale, double yScale)
+{
+    double signalFactor = 1.0 - signalAttenuation;
+    double signalStrength = 1.0;
 
-/*     if(noiseBuffer_is2D(buffer)) */
-/*     { */
-/*         int rowCount = noiseBuffer_height(buffer); */
-/*         int colCount = noiseBuffer_width(buffer); */
-/*         double xScale = x; */
-/*         double yScale = y; */
-/*         assert(xScale > 0.0); */
-/*         assert(yScale > 0.0); */
+    int rowCount = buffer->height;
+    int colCount = buffer->width;
+    assert(xScale > 0.0);
+    assert(yScale > 0.0);
 
-/*         /\* First iteration: No additional scaling or signal attenuation *\/ */
-/*         /\* Saves time with the multiplications in the first layer       *\/ */
-/*         for(int row = 0; row < rowCount; ++row) */
-/*         { */
-/*             double scaledY = yScale * row / rowCount; */
-/*             for(int col = 0; col < colCount; ++col) */
-/*                 noiseBuffer_set2D(buffer, row, col, rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, z)); */
-/*         } */
+    /* First iteration: No additional scaling or signal attenuation */
+    for(int row = 0; row < rowCount; ++row)
+    {
+        double scaledY = yScale * row / rowCount;
+        for(int col = 0; col < colCount; ++col)
+            noiseBuffer2D_setValue(buffer, row, col, rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, 0.0));
+    }
 
-/*         /\* The rest of the iterations *\/ */
-/*         for(int iteration = 1; iteration < layerCount; ++iteration) */
-/*         { */
-/*             xScale *= layerScale; */
-/*             yScale *= layerScale; */
-/*             signalStrength *= signalFactor; */
-/*             for(int row = 0; row < rowCount; ++row) */
-/*             { */
-/*                 double scaledY = yScale * row / rowCount; */
-/*                 for(int col = 0; col < colCount; ++col) */
-/*                     noiseBuffer_add2D(buffer, row, col, signalStrength * rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, z)); */
-/*             } */
-/*         } */
-/*     } */
-/*     else */
-/*     { */
-/*         int length = noiseBuffer_length(buffer); */
-/*         double xScale = x; */
-/*         assert(xScale > 0.0); */
+    /* The rest of the iterations */
+    for(int iteration = 1; iteration < layerCount; ++iteration)
+    {
+        xScale *= layerScale;
+        yScale *= layerScale;
+        signalStrength *= signalFactor;
+        for(int row = 0; row < rowCount; ++row)
+        {
+            double scaledY = yScale * row / rowCount;
+            for(int col = 0; col < colCount; ++col)
+                noiseBuffer2D_setValue(
+                    buffer, row, col,
+                    noiseBuffer2D_valueAt(buffer, row, col) + signalStrength * rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, 0.0));
+        }
+    }
 
-/*         /\* First iteration: No additional scaling or signal attenuation *\/ */
-/*         /\* Saves time with the multiplications in the first layer       *\/ */
-/*         for(int index = 0; index < length; ++index) */
-/*             noiseBuffer_set1D(buffer, index, rng31Perlin_sample(perlin, xScale * index / length, y, z)); */
-
-/*         /\* The rest of the iterations *\/ */
-/*         for(int iteration = 1; iteration < layerCount; ++iteration) */
-/*         { */
-/*             xScale *= layerScale; */
-/*             signalStrength *= signalFactor; */
-
-/*             for(int index = 0; index < length; ++index) */
-/*                 noiseBuffer_add1D(buffer, index, signalStrength * rng31Perlin_sample(perlin, xScale * index / length, y, z)); */
-/*         } */
-/*     } */
-/* } */
+    noiseBuffer2D_normalize(buffer);
+}
 
 /* Not exposed in header */
 double rng31Perlin_sample(const RNG31_Perlin *perlin, double x, double y, double z)
@@ -179,4 +149,13 @@ double rng31Perlin_grad(int hash, double x, double y, double z)
     double u = h<8 ? x : y;
     double v = h<4 ? y : h==12||h==14 ? x : z;
     return ((h&1) == 0 ? u : -u) + ((h&2) == 0 ? v : -v);
+}
+
+void perlin_swap_permutation(void *permutations, int index1, int index2)
+{
+    uint8_t *p = (uint8_t*)permutations;
+    uint8_t value1 = p[index1];
+
+    p[index1] = p[index2];
+    p[index2] = value1;
 }

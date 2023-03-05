@@ -12,9 +12,13 @@ OBJS = AbstractRNGCore.o	\
        Vose.o				\
        Perlin.o				\
        Ease.o				\
+       Color.o				\
+       Image.o				\
+       NoiseBuffer2D.o      \
+       BMPWriter.o          \
        Utilities.o
 
-all : test BuffonsNeedle MonteHall
+all : test BuffonsNeedle MonteHall ChaosGame
 	./test.exe
 
 # Tests/Examples
@@ -27,11 +31,26 @@ BuffonsNeedle : BuffonsNeedle.cpp $(OBJS)
 MonteHall : MonteHall.cpp $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
+ChaosGame : ChaosGame.cpp $(OBJS)
+	$(COMPILER) $(FLAGS) $^ -o $@.exe
+
 # Misc
 Ease.o : Ease.h Ease.cpp
 	$(COMPILER) $(FLAGS) $^ -c
 
 Utilities.o : Utilities.h Utilities.cpp
+	$(COMPILER) $(FLAGS) $^ -c
+
+Color.o : Color.h Color.cpp
+	$(COMPILER) $(FLAGS) $^ -c
+
+Image.o : Image.h Image.cpp
+	$(COMPILER) $(FLAGS) $^ -c
+
+NoiseBuffer2D.o : NoiseBuffer2D.h NoiseBuffer2D.cpp
+	$(COMPILER) $(FLAGS) $^ -c
+
+BMPWriter.o : BMPWriter.h BMPWriter.cpp
 	$(COMPILER) $(FLAGS) $^ -c
 
 # 31-bit Random Number Transforms
@@ -70,4 +89,4 @@ AbstractRNGCore.o : RNG31Core/AbstractRNGCore.h RNG31Core/AbstractRNGCore.cpp
 	$(COMPILER) $(FLAGS) $^ -c
 
 clean :
-	rm -rf *.o *.gch *.exe *.stackdump RNG31Core/*.gch RNG31Transform/*.gch
+	rm -rf *.o *.gch *.bmp *.exe *.stackdump RNG31Core/*.gch RNG31Transform/*.gch
