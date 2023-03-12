@@ -35,7 +35,7 @@ class MersenneTwister(AbstractRNG31Core):
     __LOWER_MASK = 0x7FFFFFFF # (1 << R) - 1
     __UPPER_MASK = 0x80000000 # lowest W bits of ~LOWER_MASK
 
-    def __init__(self, seed=None):
+    def __init__(self, seed=0):
         self.__buffer = [0] * MersenneTwister.__N
         self.__index = MersenneTwister.__N
         super().__init__(seed & MersenneTwister.__MASK)

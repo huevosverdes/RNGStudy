@@ -8,7 +8,9 @@ class Image:
         self._width = width
         self._height = height
         self._capacity = width * height
-        self._buffer = [Color(0, 0, 0, 255)] * self._capacity
+        self._buffer = [None] * self._capacity
+        for index in range(self._capacity):
+            self._buffer[index] = Color(0, 0, 0, 255)
 
     def width(self):
         return self._width
@@ -24,7 +26,7 @@ class Image:
     def set(self, row, col, color):
         assert(0 <= row and row < int(self._height));
         assert(0 <= col and col < int(self._width));
-        self._buffer[(((self._height-1) - row) * self._width) + col] = color;
+        self._buffer[(((self._height-1) - row) * self._width) + col]._color = color._color;
 
     def fill(self, color):
         for c in self._buffer:

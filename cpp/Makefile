@@ -18,7 +18,7 @@ OBJS = AbstractRNGCore.o	\
        BMPWriter.o          \
        Utilities.o
 
-all : test BuffonsNeedle MonteHall ChaosGame
+all : test BuffonsNeedle MonteHall ChaosGame CoinToss UniformVsNormal
 	./test.exe
 
 # Tests/Examples
@@ -32,6 +32,12 @@ MonteHall : MonteHall.cpp $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
 ChaosGame : ChaosGame.cpp $(OBJS)
+	$(COMPILER) $(FLAGS) $^ -o $@.exe
+
+CoinToss : CoinToss.cpp $(OBJS)
+	$(COMPILER) $(FLAGS) $^ -o $@.exe
+
+UniformVsNormal : UniformVsNormal.cpp $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
 # Misc

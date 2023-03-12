@@ -4,7 +4,7 @@ from RNG31Core.AbstractRNG31Core import AbstractRNG31Core
 from RNG31Transform.Uniform import Uniform
 
 
-class RNGNormal:
+class Normal:
     """
     Class for returning values in a uniform distribution
     - mean = 0.0

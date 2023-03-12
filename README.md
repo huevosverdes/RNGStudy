@@ -5,6 +5,8 @@ I conceptualize RNG in two parts:
 1. The core which generates some number of random bits
 2. The transformations that give us useful values from the random bits provided by the core
 
+I could have made a fancy User Interface with Qt or OpenGL, but instead opted to keep things as simple as possible so anyone can build and run the examples in almost any environment. In this case, I used gcc and make. On Windows you can get this to run fairly simply by installing [MinGW](https://www.mingw-w64.org/downloads/) or [MSYS2](https://www.msys2.org/wiki/MSYS2-installation/).
+
 ## Core RNG
 The main goal was to have random number generation cores that would always generate the same sequence of numbers no matter what language it was built in. I was inspired by the GBFlip paper which gives some testing values for a given seed at the first and 135th values generated. If you get the expected values, you coded it right. To the best of my ability I verified each core and provide value tests for each.
 
@@ -32,6 +34,8 @@ Usually 31 random bits aren't useful. Instead we want to get a random value in s
 - **Perlin Noise**: Fancy noise creation used in many graphics applications.
 
 ## Demonstrations
+- Coin Toss: Simple demonstration of a coin toss. This method is fairly efficient with 31 coin tosses per randomly generated number.
+- [Uniform](https://en.wikipedia.org/wiki/Discrete_uniform_distribution) vs. [Normal](https://en.wikipedia.org/wiki/Normal_distribution): A side-by-side comparison of different random distributions.
 - [Buffon's Needle](https://en.wikipedia.org/wiki/Buffon%%27s_needle_problem): A probability problem with some interesting properties related to PI. We don't do the math, just an RNG simulation.
 - [Monte Hall Problem](https://en.wikipedia.org/wiki/Monty_Hall_problem): A counterintuitive probability problem. We don't do the math, just an RNG simulation.
 - [Chaos Game](https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle#Chaos_game): We use randomness to generate pretty pictures.

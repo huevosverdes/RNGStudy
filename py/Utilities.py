@@ -60,4 +60,4 @@ def getRNGCore():
 def message(timeout, msg, *args):
     print(msg % args)
     sys.stdout.flush()
-    # time.sleep(timeout)
+    time.sleep(timeout)

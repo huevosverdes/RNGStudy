@@ -69,5 +69,5 @@ void message(double timeout, const char *msg, ...)
 
     printf("\n");
     fflush(stdout);
-    // std::this_thread::sleep_for(std::chrono::milliseconds(int(timeout * 1000)));
+    std::this_thread::sleep_for(std::chrono::milliseconds(int(timeout * 1000)));
 }

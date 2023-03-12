@@ -75,5 +75,5 @@ void message(double timeout, const char *msg, ...)
 
     printf("\n");
     fflush(stdout);
-    /* sleep(timeout); */
+    sleep(timeout);
 }
