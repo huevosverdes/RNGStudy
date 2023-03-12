@@ -36,6 +36,6 @@ Usually 31 random bits aren't useful. Instead we want to get a random value in s
 ## Demonstrations
 - Coin Toss: Simple demonstration of a coin toss. This method is fairly efficient with 31 coin tosses per randomly generated number.
 - [Uniform](https://en.wikipedia.org/wiki/Discrete_uniform_distribution) vs. [Normal](https://en.wikipedia.org/wiki/Normal_distribution): A side-by-side comparison of different random distributions.
-- [Buffon's Needle](https://en.wikipedia.org/wiki/Buffon%%27s_needle_problem): A probability problem with some interesting properties related to PI. We don't do the math, just an RNG simulation.
+- [Buffon's Needle](https://en.wikipedia.org/wiki/Buffon%27s_needle_problem): A probability problem with some interesting properties related to PI. We don't do the math, just an RNG simulation.
 - [Monte Hall Problem](https://en.wikipedia.org/wiki/Monty_Hall_problem): A counterintuitive probability problem. We don't do the math, just an RNG simulation.
 - [Chaos Game](https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle#Chaos_game): We use randomness to generate pretty pictures.
