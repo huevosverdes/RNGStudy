@@ -18,7 +18,7 @@ OBJS = AbstractRNG31Core.o            \
        BMPWriter.o                    \
        Utilities.o
 
-all : test BuffonsNeedle MonteHall ChaosGame CoinToss UniformVsNormal
+all : test BuffonsNeedle MonteHall ChaosGame CoinToss UniformVsNormal PointsInACircle
 	./test.exe
 
 # Tests/Examples
@@ -38,6 +38,9 @@ CoinToss : CoinToss.c $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
 UniformVsNormal : UniformVsNormal.c $(OBJS)
+	$(COMPILER) $(FLAGS) $^ -o $@.exe
+
+PointsInACircle : PointsInACircle.c $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
 # Misc

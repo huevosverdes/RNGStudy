@@ -77,3 +77,39 @@ void message(double timeout, const char *msg, ...)
     fflush(stdout);
     sleep(timeout);
 }
+
+void addSamplePoint(Image *img, int x, int y)
+{
+#define STEP 50
+#define MAX (255 - STEP)
+
+    Color c = image_colorAt(img, y, x);
+
+    if(c.bytes[BLU_BYTE] <= MAX)
+        c.bytes[BLU_BYTE] += STEP;
+    else if(c.bytes[GRN_BYTE] <= MAX)
+        c.bytes[GRN_BYTE] += STEP;
+    else if(c.bytes[RED_BYTE] <= MAX)
+        c.bytes[RED_BYTE] += STEP;
+    else
+        c.value = 0xFFFFFFFF;
+
+    image_setPixel(img, y, x, c);
+}
+
+void writeBMPImage(Image *img, char *fileNameFormat, ...)
+{
+    va_list args1, args2;
+    va_start(args1, fileNameFormat);
+    va_copy(args2, args1);
+    int len = vsnprintf(NULL, 0, fileNameFormat, args1);
+    va_end(args1);
+
+    char *fileName = (char*)malloc(sizeof(char) * (len+2));
+    vsnprintf(fileName, len+1, fileNameFormat, args2);
+    va_end(args2);
+
+    bmp_write(fileName, img);
+    printf("Wrote File: %s\n", fileName);
+    free(fileName);
+}

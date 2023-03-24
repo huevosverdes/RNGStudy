@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "BMPWriter.h"
 #include "Image.h"
 #include "Color.h"
 
@@ -44,7 +43,6 @@ void demo(RNG31_Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCo
 void clearGame(RNG31_Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCount);
 void playGame(RNG31_Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCount);
 void addPoints(int count, RNG31_Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCount);
-void writeImage(Image *img, const char *prefix, int count);
 
 int main(int argc, char **argv)
 {
@@ -180,31 +178,31 @@ void demo(RNG31_Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCo
     *lastY = nextY;
     ++(*sampleCount);
     message(4.0, "Then we move to the point halfway between our current point and the randomly selected corner: (%d, %d)", nextX, nextY);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(9, urng, img, lastX, lastY, sampleCount);
     message(4.0, "Let's do that a few more times ending at (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(90, urng, img, lastX, lastY, sampleCount);
     message(2.0, "A few more ending at (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(900, urng, img, lastX, lastY, sampleCount);
     message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(9000, urng, img, lastX, lastY, sampleCount);
     message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(90000, urng, img, lastX, lastY, sampleCount);
     message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(900000, urng, img, lastX, lastY, sampleCount);
     message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", *sampleCount);
     message(1.0, "");
 
     message(3.0, "If you look at the pictures you can see that no matter where we start,");
@@ -257,7 +255,7 @@ void playGame(RNG31_Uniform *urng, Image *img, int *lastX, int *lastY, int *samp
 {
     int count = getUserInt(1, 1000000, "How many points would you like to add?");
     addPoints(count, urng, img, lastX, lastY, sampleCount);
-    writeImage(img, "ChaosGame", *sampleCount);
+    writeBMPImage(img, "ChaosGame_%07d.bmp", *sampleCount);
 }
 
 void addPoints(int count, RNG31_Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCount)
@@ -293,16 +291,4 @@ void addPoints(int count, RNG31_Uniform *urng, Image *img, int *lastX, int *last
         *lastY = nextY;
     }
     *sampleCount += count;
-}
-
-void writeImage(Image *img, const char *prefix, int count)
-{
-    int len = strlen(prefix) + 13;
-    char *fName = (char*)malloc(sizeof(char) * (len + 1));
-    snprintf(fName, len, "%s_%07d.bmp", prefix, count);
-    fName[len] = '\0';
-
-    bmp_write(fName, img);
-    printf("Wrote File: %s\n", fName);
-    free(fName);
 }

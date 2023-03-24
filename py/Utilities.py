@@ -8,6 +8,8 @@ from RNG31Core.R250_R521 import R250_R521
 from RNG31Core.MersenneTwister import MersenneTwister
 from RNG31Core.Isaac import Isaac
 
+from BMPWriter import BMPWriter
+
 
 def getUserInt(low, high, prompt, *args):
     result = 0
@@ -61,3 +63,28 @@ def message(timeout, msg, *args):
     print(msg % args)
     sys.stdout.flush()
     time.sleep(timeout)
+
+
+def addSamplePoint(img, x, y):
+    STEP = 50
+    MAX  = 255 - STEP
+
+    c = img.at(y, x)
+
+    if c.blu() <= MAX:
+        c.setBlu(c.blu() + STEP)
+    elif c.grn() <= MAX:
+        c.setGrn(c.grn() + STEP)
+    elif c.red() <= MAX:
+        c.setRed(c.red() + STEP)
+    else:
+        c.set(0xFF, 0xFF, 0xFF)
+
+    img.set(y, x, c)
+
+
+def writeBMPImage(img, fileNameFormat, *args):
+    fileName = fileNameFormat % args
+
+    BMPWriter.write(fileName, img)
+    print("Wrote File: %s" % (fileName,))

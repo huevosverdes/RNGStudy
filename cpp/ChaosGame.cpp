@@ -10,7 +10,6 @@
 
 #include "Utilities.h"
 #include "NoiseBuffer2D.h"
-#include "BMPWriter.h"
 #include "RNG31Core/AbstractRNGCore.h"
 #include "RNG31Transform/Uniform.h"
 #include "RNG31Transform/Perlin.h"
@@ -46,7 +45,6 @@ void demo(RNG31::Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleC
 void clearGame(RNG31::Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCount);
 void playGame(RNG31::Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCount);
 void addPoints(int count, RNG31::Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCount);
-void writeImage(Image *img, const char *prefix, int count);
 
 int main(int argc, char **argv)
 {
@@ -173,31 +171,31 @@ void demo(RNG31::Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleC
     *lastY = nextY;
     ++(*sampleCount);
     message(4.0, "Then we move to the point halfway between our current point and the randomly selected corner: (%d, %d)", nextX, nextY);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, (char*)"Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(9, urng, img, lastX, lastY, sampleCount);
     message(4.0, "Let's do that a few more times ending at (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, (char*)"Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(90, urng, img, lastX, lastY, sampleCount);
     message(2.0, "A few more ending at (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, (char*)"Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(900, urng, img, lastX, lastY, sampleCount);
     message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, (char*)"Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(9000, urng, img, lastX, lastY, sampleCount);
     message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, (char*)"Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(90000, urng, img, lastX, lastY, sampleCount);
     message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, (char*)"Demo_ChaosGame_%07d.bmp", *sampleCount);
 
     addPoints(900000, urng, img, lastX, lastY, sampleCount);
     message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, *sampleCount);
-    writeImage(img, "Demo_ChaosGame", *sampleCount);
+    writeBMPImage(img, (char*)"Demo_ChaosGame_%07d.bmp", *sampleCount);
     message(1.0, "");
 
     message(3.0, "If you look at the pictures you can see that no matter where we start,");
@@ -251,7 +249,7 @@ void playGame(RNG31::Uniform *urng, Image *img, int *lastX, int *lastY, int *sam
 {
     int count = getUserInt(1, 1000000, "How many points would you like to add?");
     addPoints(count, urng, img, lastX, lastY, sampleCount);
-    writeImage(img, "ChaosGame", *sampleCount);
+    writeBMPImage(img, (char*)"ChaosGame_%07d.bmp", *sampleCount);
 }
 
 void addPoints(int count, RNG31::Uniform *urng, Image *img, int *lastX, int *lastY, int *sampleCount)
@@ -287,16 +285,4 @@ void addPoints(int count, RNG31::Uniform *urng, Image *img, int *lastX, int *las
         *lastY = nextY;
     }
     *sampleCount += count;
-}
-
-void writeImage(Image *img, const char *prefix, int count)
-{
-    int len = strlen(prefix) + 13;
-    char *fName = (char*)malloc(sizeof(char) * (len + 1));
-    snprintf(fName, len, "%s_%07d.bmp", prefix, count);
-    fName[len] = '\0';
-
-    BMPWriter::write(fName, img);
-    printf("Wrote File: %s\n", fName);
-    free(fName);
 }

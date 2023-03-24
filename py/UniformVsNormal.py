@@ -22,22 +22,22 @@ RECT_NORMAL_W = BOX_SIZE
 RECT_NORMAL_H = BOX_SIZE
 
 
-def addPoint(img, x, y):
-    STEP = 50
-    MAX  = 255 - STEP
+# def addPoint(img, x, y):
+#     STEP = 50
+#     MAX  = 255 - STEP
 
-    c = img.at(y, x)
+#     c = img.at(y, x)
 
-    if c.blu() <= MAX:
-        c.setBlu(c.blu() + STEP)
-    elif c.grn() <= MAX:
-        c.setGrn(c.grn() + STEP)
-    elif c.red() <= MAX:
-        c.setRed(c.red() + STEP)
-    else:
-        c.set(0xFF, 0xFF, 0xFF)
+#     if c.blu() <= MAX:
+#         c.setBlu(c.blu() + STEP)
+#     elif c.grn() <= MAX:
+#         c.setGrn(c.grn() + STEP)
+#     elif c.red() <= MAX:
+#         c.setRed(c.red() + STEP)
+#     else:
+#         c.set(0xFF, 0xFF, 0xFF)
 
-    img.set(y, x, c)
+#     img.set(y, x, c)
 
 
 def drawBox(img, x, y, w, h, c):
@@ -49,14 +49,11 @@ def drawBox(img, x, y, w, h, c):
         img.set(y + count, x + w, c)
 
 
-def writeImage(img, prefix):
-    fName = "%s.bmp" % (prefix,)
+# def writeImage(img, prefix):
+#     fName = "%s.bmp" % (prefix,)
 
-    BMPWriter.write(fName, img)
-    print("Wrote File: %s" % (fName,))
-    print("- The more times a point is sampled, the brighter it gets.");
-    print("- The box on the left contains random points with a Uniform sampling.");
-    print("- The box on the right contains random points with a Gaussian sampling within 4 standard deviations of the center.\n");
+#     BMPWriter.write(fName, img)
+#     print("Wrote File: %s" % (fName,))
 
 
 if __name__ == "__main__":
@@ -80,7 +77,7 @@ if __name__ == "__main__":
     for _ in range(1000000):
         x = urng.next(RECT_UNIFORM_W+1)
         y = urng.next(RECT_UNIFORM_H+1)
-        addPoint(img, int(x + RECT_UNIFORM_X), int(y + RECT_UNIFORM_Y))
+        Utilities.addSamplePoint(img, int(x + RECT_UNIFORM_X), int(y + RECT_UNIFORM_Y))
 
     count = 0
     while count < 500000:
@@ -94,9 +91,11 @@ if __name__ == "__main__":
         if ((0 <= x and x < RECT_NORMAL_W) and
             (0 <= y and y < RECT_NORMAL_H)):
             # Accept point: within 4 standard deviations from mean
-            addPoint(img, int(x + RECT_NORMAL_X), int(y + RECT_NORMAL_Y))
+            Utilities.addSamplePoint(img, int(x + RECT_NORMAL_X), int(y + RECT_NORMAL_Y))
             count += 1
 
-    writeImage(img, "UniformVsNormal")
-
+    Utilities.writeBMPImage(img, "UniformVsNormal.bmp")
+    print("- The more times a point is sampled, the brighter it gets.");
+    print("- The box on the left contains random points with a Uniform sampling.");
+    print("- The box on the right contains random points with a Gaussian sampling within 4 standard deviations of the center.\n");
     exit(0)

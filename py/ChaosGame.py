@@ -146,17 +146,13 @@ def clearGame(urng, img):
 
     return lastX, lastY, 0
 
-def writeImage(img, prefix, count):
-    fName = "%s_%07d.bmp" % (prefix, count)
-
-    BMPWriter.write(fName, img)
-    print("Wrote File: %s\n" % (fName,))
 
 def playGame(urng, img, lastX, lastY, sampleCount):
     count = Utilities.getUserInt(1, 1000000, "How many points would you like to add?")
     lastX, lastY, sampleCount = addPoints(count, urng, img, lastX, lastY, sampleCount)
-    writeImage(img, "ChaosGame", sampleCount)
+    Utilities.writeBMPImage(img, "ChaosGame_%07d.bmp", sampleCount)
     return lastX, lastY, sampleCount
+
 
 def demo(urng, img, lastX, lastY, sampleCount):
     if sampleCount != 0:
@@ -191,27 +187,27 @@ def demo(urng, img, lastX, lastY, sampleCount):
     lastY = nextY
     sampleCount += 1
     Utilities.message(4.0, "Then we move to the point halfway between our current point and the randomly selected corner: (%d, %d)", nextX, nextY)
-    writeImage(img, "Demo_ChaosGame", sampleCount)
+    Utilities.writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", sampleCount)
 
     lastX, lastY, sampleCount = addPoints(9, urng, img, lastX, lastY, sampleCount)
     Utilities.message(4.0, "Let's do that a few more times ending at (%d, %d) after Move #%d.", nextX, nextY, sampleCount)
-    writeImage(img, "Demo_ChaosGame", sampleCount)
+    Utilities.writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", sampleCount)
 
     lastX, lastY, sampleCount = addPoints(90, urng, img, lastX, lastY, sampleCount)
     Utilities.message(2.0, "A few more ending at (%d, %d) after Move #%d.", nextX, nextY, sampleCount)
-    writeImage(img, "Demo_ChaosGame", sampleCount)
+    Utilities.writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", sampleCount)
 
     lastX, lastY, sampleCount = addPoints(900, urng, img, lastX, lastY, sampleCount)
     Utilities.message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, sampleCount)
-    writeImage(img, "Demo_ChaosGame", sampleCount)
+    Utilities.writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", sampleCount)
 
     lastX, lastY, sampleCount = addPoints(9000, urng, img, lastX, lastY, sampleCount)
     Utilities.message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, sampleCount)
-    writeImage(img, "Demo_ChaosGame", sampleCount)
+    Utilities.writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", sampleCount)
 
     lastX, lastY, sampleCount = addPoints(90000, urng, img, lastX, lastY, sampleCount)
     Utilities.message(2.0, "Keep going to (%d, %d) after Move #%d.", nextX, nextY, sampleCount)
-    writeImage(img, "Demo_ChaosGame", sampleCount)
+    Utilities.writeBMPImage(img, "Demo_ChaosGame_%07d.bmp", sampleCount)
 
     Utilities.message(3.0, "If you look at the pictures you can see that no matter where we start,")
     Utilities.message(3.0, "we always get pulled into a pattern called the Sierpinski Triangle.")

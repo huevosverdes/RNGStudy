@@ -71,3 +71,39 @@ void message(double timeout, const char *msg, ...)
     fflush(stdout);
     std::this_thread::sleep_for(std::chrono::milliseconds(int(timeout * 1000)));
 }
+
+void addSamplePoint(Image *img, int x, int y)
+{
+#define STEP 50
+#define MAX (255 - STEP)
+
+    Color c = img->at(y, x);
+
+    if(c.blu() <= MAX)
+        c.setBlu(c.blu() + STEP);
+    else if(c.grn() <= MAX)
+        c.setGrn(c.grn() + STEP);
+    else if(c.red() <= MAX)
+        c.setRed(c.red() + STEP);
+    else
+        c.set(0xFF, 0xFF, 0xFF);
+
+    img->set(y, x, c);
+}
+
+void writeBMPImage(Image *img, char *fileNameFormat, ...)
+{
+    va_list args1, args2;
+    va_start(args1, fileNameFormat);
+    va_copy(args2, args1);
+    int len = vsnprintf(NULL, 0, fileNameFormat, args1);
+    va_end(args1);
+
+    char *fileName = (char*)malloc(sizeof(char) * (len+2));
+    vsnprintf(fileName, len+1, fileNameFormat, args2);
+    va_end(args2);
+
+    BMPWriter::write(fileName, img);
+    printf("Wrote File: %s\n", fileName);
+    free(fileName);
+}

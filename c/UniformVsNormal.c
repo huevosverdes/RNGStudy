@@ -5,7 +5,6 @@
 #include "RNG31Transform/RNG31_Uniform.h"
 #include "RNG31Transform/RNG31_Normal.h"
 
-#include "BMPWriter.h"
 #include "Image.h"
 #include "Color.h"
 
@@ -25,9 +24,7 @@ const int RECT_NORMAL_Y = (HEIGHT - BOX_SIZE) / 2;
 const int RECT_NORMAL_W = BOX_SIZE;
 const int RECT_NORMAL_H = BOX_SIZE;
 
-void addPoint(Image *img, int x, int y);
 void drawBox(Image *img, int x, int y, int w, int h, Color c);
-void writeImage(Image *img, const char *prefix);
 
 int main(int argc, char **argv)
 {
@@ -47,7 +44,7 @@ int main(int argc, char **argv)
     for(int index = 0; index < 3000000; ++index) {
         int x = rng31Uniform_next(urng, 0, RECT_UNIFORM_W + 1);
         int y = rng31Uniform_next(urng, 0, RECT_UNIFORM_H + 1);
-        addPoint(img, x + RECT_UNIFORM_X, y + RECT_UNIFORM_Y);
+        addSamplePoint(img, x + RECT_UNIFORM_X, y + RECT_UNIFORM_Y);
     }
     for(int index = 0; index < 1500000; ++index) {
         const int STD_DEV_X = RECT_NORMAL_W / 8;
@@ -60,36 +57,21 @@ int main(int argc, char **argv)
         if((0 <= x && x < RECT_NORMAL_W) &&
            (0 <= y && y < RECT_NORMAL_H))
             /* Accept point: within 4 standard deviations from mean */
-            addPoint(img, x + RECT_NORMAL_X, y + RECT_NORMAL_Y);
+            addSamplePoint(img, x + RECT_NORMAL_X, y + RECT_NORMAL_Y);
         else
-            /* Reject point:more than 4 standard deviations from mean */
+            /* Reject point: more than 4 standard deviations from mean */
             --index;
     }
 
-    writeImage(img, "UniformVsNormal");
+    writeBMPImage(img, "UniformVsNormal.bmp");
+    printf("- The more times a point is sampled, the brighter it gets.\n");
+    printf("- The box on the left contains random points with a Uniform sampling.\n");
+    printf("- The box on the right contains random points with a Gaussian sampling within 4 standard deviations of the center.\n\n");
 
     free(urng);
+    free(nrng);
     free(arng);
     return 0;
-}
-
-void addPoint(Image *img, int x, int y)
-{
-#define STEP 50
-#define MAX (255 - STEP)
-
-    Color c = image_colorAt(img, y, x);
-
-    if(c.bytes[BLU_BYTE] <= MAX)
-        c.bytes[BLU_BYTE] += STEP;
-    else if(c.bytes[GRN_BYTE] <= MAX)
-        c.bytes[GRN_BYTE] += STEP;
-    else if(c.bytes[RED_BYTE] <= MAX)
-        c.bytes[RED_BYTE] += STEP;
-    else
-        c.value = 0xFFFFFFFF;
-
-    image_setPixel(img, y, x, c);
 }
 
 void drawBox(Image *img, int x, int y, int w, int h, Color c)
@@ -102,19 +84,4 @@ void drawBox(Image *img, int x, int y, int w, int h, Color c)
         image_setPixel(img, y + count, x    , c);
         image_setPixel(img, y + count, x + w, c);
     }
-}
-
-void writeImage(Image *img, const char *prefix)
-{
-    int len = strlen(prefix) + 13;
-    char *fName = (char*)malloc(sizeof(char) * (len + 1));
-    snprintf(fName, len, "%s.bmp", prefix);
-    fName[len] = '\0';
-
-    bmp_write(fName, img);
-    printf("Wrote File: %s\n", fName);
-    printf("- The more times a point is sampled, the brighter it gets.\n");
-    printf("- The box on the left contains random points with a Uniform sampling.\n");
-    printf("- The box on the right contains random points with a Gaussian sampling within 4 standard deviations of the center.\n\n");
-    free(fName);
 }

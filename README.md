@@ -39,3 +39,4 @@ Usually 31 random bits aren't useful. Instead we want to get a random value in s
 - [Buffon's Needle](https://en.wikipedia.org/wiki/Buffon%27s_needle_problem): A probability problem with some interesting properties related to PI. We don't do the math, just an RNG simulation.
 - [Monte Hall Problem](https://en.wikipedia.org/wiki/Monty_Hall_problem): A counterintuitive probability problem. We don't do the math, just an RNG simulation.
 - [Chaos Game](https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle#Chaos_game): We use randomness to generate pretty pictures.
+- [Points-In-Circle](https://programming.guide/random-point-within-circle.html): Uniform sampling of a radius can lead to non-uniform point distributions if we don't correct it.
