@@ -66,6 +66,7 @@ class Uniform:
         return (r * math.cos(angle), r * math.sin(angle))
 
     def shuffle(self, container: list):
+        # https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
         # https://www.rosettacode.org/wiki/Knuth_shuffle
         assert(container and type(container) == list)
         for index in reversed(range(1, len(container))):

@@ -7,7 +7,6 @@
 
 #include "../RNG31Core/AbstractRNGCore.h"
 
-
 namespace RNG31
 {
     typedef void (*SwapFuncPtr)(void *container, int index1, int index2);

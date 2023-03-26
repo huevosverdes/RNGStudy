@@ -69,6 +69,7 @@ void Uniform::pointInCircle(double radius, double &x, double &y)
 
 void Uniform::shuffle(void *container, int length, SwapFuncPtr swap)
 {
+    // https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
     // https://www.rosettacode.org/wiki/Knuth_shuffle
     for(int index = length - 1; index > 0; --index) {
         int swapIndex = next(index);

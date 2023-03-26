@@ -1,8 +1,4 @@
 #include <stdio.h>
-/* #include <stdlib.h> */
-/* #include <string.h> */
-/* #include <unistd.h> */
-
 
 #include "RNG31Core/AbstractRNG31Core.h"
 #include "RNG31Core/RNG31Core_GBFlip.h"

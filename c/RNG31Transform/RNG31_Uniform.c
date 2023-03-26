@@ -1,7 +1,5 @@
 #include "RNG31_Uniform.h"
 
-#include <stdio.h>
-
 #ifndef M_PI
 #define M_PI (3.14159265358979323846264338327950288)
 #endif /* M_PI */
@@ -51,6 +49,7 @@ void rng31Uniform_pointInCircle(RNG31_Uniform *urng, double radius, double *x, d
 
 void rng31Uniform_shuffle(RNG31_Uniform *urng, void *container, int length, SwapFuncPtr swap)
 {
+    /* https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle */
     /* https://www.rosettacode.org/wiki/Knuth_shuffle */
     for(int index = length - 1; index > 0; --index) {
         int swapIndex = rng31Uniform_next(urng, 0, index);
