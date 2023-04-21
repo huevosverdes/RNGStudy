@@ -24,6 +24,7 @@
 #endif /* M_PI */
 
 int getUserInt(int low, int high, const char *prompt, ...);
+double getUserFlt(double low, double high, const char *prompt, ...);
 RNG31::AbstractRNGCore *getRNGCore();
 void message(double timeout, const char *msg, ...);
 

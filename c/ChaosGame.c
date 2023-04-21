@@ -25,15 +25,15 @@
 int colorMethod = COLOR_METHOD_NOISE;
 
 /* Attractor Points */
-const double X1 = 5.0;
-const double Y1 = HEIGHT - 5.0;
-const double X2 = WIDTH - 5.0;
-const double Y2 = Y1;
-const double X3 = (X1 + X2) / 2.0;
-const double Y3 = Y1 - (sqrt(3.0) / 2.0) * (HEIGHT - 10.0);
+#define X1 5.0
+#define Y1 (HEIGHT - 5.0)
+#define X2 (WIDTH - 5.0)
+#define Y2 Y1
+#define X3 ((X1 + X2) / 2.0)
+#define Y3 (Y1 - (sqrt(3.0) / 2.0) * (HEIGHT - 10.0))
 
-const double XCenter = X3;
-const double YCenter = (Y3 + Y1) / 2.0;
+#define XCenter X3
+#define YCenter ((Y3 + Y1) / 2.0)
 
 NoiseBuffer2D *bluNoise;
 NoiseBuffer2D *grnNoise;
@@ -116,25 +116,27 @@ Color colorAtPoint(int x, int y, int method)
         blu = (float)y / HEIGHT;
         break;
     case COLOR_METHOD_ANGLE:
-        double vecCenterX = x - XCenter;
-        double vecCenterY = y - YCenter;
-        double pRadius = sqrt(vecCenterX*vecCenterX + vecCenterY*vecCenterY);
+        {
+            double vecCenterX = x - XCenter;
+            double vecCenterY = y - YCenter;
+            double pRadius = sqrt(vecCenterX*vecCenterX + vecCenterY*vecCenterY);
 
-        double vecGrnX = X1 - XCenter;
-        double vecGrnY = Y1 - YCenter;
-        double triRadius = sqrt(vecGrnX*vecGrnX + vecGrnY*vecGrnY);
-        double angleGrn = acos((vecCenterX * vecGrnX + vecCenterY * vecGrnY) / (triRadius * pRadius)) * 180.0 / M_PI;
-        grn = (angleGrn <= 120.0) ? (120.0 - angleGrn) / 120.0 : 0.0;
+            double vecGrnX = X1 - XCenter;
+            double vecGrnY = Y1 - YCenter;
+            double triRadius = sqrt(vecGrnX*vecGrnX + vecGrnY*vecGrnY);
+            double angleGrn = acos((vecCenterX * vecGrnX + vecCenterY * vecGrnY) / (triRadius * pRadius)) * 180.0 / M_PI;
+            grn = (angleGrn <= 120.0) ? (120.0 - angleGrn) / 120.0 : 0.0;
 
-        double vecBluX = X2 - XCenter;
-        double vecBluY = Y2 - YCenter;
-        double angleBlu = acos((vecCenterX * vecBluX + vecCenterY * vecBluY) / (triRadius * pRadius)) * 180.0 / M_PI;
-        blu = (angleBlu <= 120.0) ? (120.0 - angleBlu) / 120.0 : 0.0;
+            double vecBluX = X2 - XCenter;
+            double vecBluY = Y2 - YCenter;
+            double angleBlu = acos((vecCenterX * vecBluX + vecCenterY * vecBluY) / (triRadius * pRadius)) * 180.0 / M_PI;
+            blu = (angleBlu <= 120.0) ? (120.0 - angleBlu) / 120.0 : 0.0;
 
-        double vecRedX = X3 - XCenter;
-        double vecRedY = Y3 - YCenter;
-        double angleRed = acos((vecCenterX * vecRedX + vecCenterY * vecRedY) / (triRadius * pRadius)) * 180.0 / M_PI;
-        red = (angleRed <= 120.0) ? (120.0 - angleRed) / 120.0 : 0.0;
+            double vecRedX = X3 - XCenter;
+            double vecRedY = Y3 - YCenter;
+            double angleRed = acos((vecCenterX * vecRedX + vecCenterY * vecRedY) / (triRadius * pRadius)) * 180.0 / M_PI;
+            red = (angleRed <= 120.0) ? (120.0 - angleRed) / 120.0 : 0.0;
+        }
         break;
     case COLOR_METHOD_NOISE:
         red = 0.0;
@@ -240,11 +242,11 @@ void clearGame(RNG31_Uniform *urng, Image *img, int *lastX, int *lastY, int *sam
         rng31Perlin_init(&perlin, urng);
         rng31Perlin_shuffle(&perlin);
 
-        rng31Perlin_fill(&perlin, bluNoise, 4.0, 4.0);
+        rng31Perlin_fill(&perlin, bluNoise, 4.0, 4.0, 0.0);
         noiseBuffer2D_scale(bluNoise, 0.5);
         noiseBuffer2D_offset(bluNoise, 0.5);
 
-        rng31Perlin_fill(&perlin, grnNoise, 16.0, 16.0);
+        rng31Perlin_fill(&perlin, grnNoise, 16.0, 16.0, 0.0);
     }
 
     /* Draw Initial Point */

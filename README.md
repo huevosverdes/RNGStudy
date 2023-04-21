@@ -7,6 +7,8 @@ I conceptualize RNG in two parts:
 
 I could have made a fancy User Interface with Qt or OpenGL, but instead opted to keep things as simple as possible so anyone can build and run the examples in almost any environment. In this case, I used gcc and make. On Windows you can get this to run fairly simply by installing [MinGW](https://www.mingw-w64.org/downloads/) or [MSYS2](https://www.msys2.org/wiki/MSYS2-installation/).
 
+Also, I know that the C++ input/output looks a lot like C-style input/output. This demo is not intended to be a full ideomatic translation. The input/output is not what I want to focus on, so there is quite a bit of copy/paste because it is easier.
+
 ## Core RNG
 The main goal was to have random number generation cores that would always generate the same sequence of numbers no matter what language it was built in. I was inspired by the GBFlip paper which gives some testing values for a given seed at the first and 135th values generated. If you get the expected values, you coded it right. To the best of my ability I verified each core and provide value tests for each.
 
@@ -41,3 +43,4 @@ Usually 31 random bits aren't useful. Instead we want to get a random value in s
 - [Monte Hall Problem](https://en.wikipedia.org/wiki/Monty_Hall_problem): A counterintuitive probability problem. We don't do the math, just an RNG simulation.
 - [Chaos Game](https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle#Chaos_game): We use randomness to generate pretty pictures.
 - [Points-In-Circle](https://programming.guide/random-point-within-circle.html): Uniform sampling of a radius can lead to non-uniform point distributions if we don't correct it.
+- [Perlin Noise](https://en.wikipedia.org/wiki/Perlin_noise): This demo doesn't use RNG, but rather enables exploring some of the Perlin Noise parameters that you might vary with RNG.

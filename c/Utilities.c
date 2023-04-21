@@ -21,7 +21,37 @@ int getUserInt(int low, int high, const char *prompt, ...)
         free(userInput);
         userInput = NULL;
         bufferLen = 0;
-        printf("That was either not an integer or not between 1-3. Try again.\n"); fflush(stdout);
+        printf("That was either not an integer or not between %d and %d. Try again.\n", low, high); fflush(stdout);
+    } while(1);
+    free(userInput);
+
+    assert(low <= result && result <= high);
+    printf("\n");
+    return result;
+}
+
+double getUserFlt(double low, double high, const char *prompt, ...)
+{
+    double result;
+    char *userInput = NULL;
+    size_t bufferLen = 0;
+
+    do {
+        va_list args;
+        va_start(args, prompt);
+        vprintf(prompt, args);
+        va_end(args);
+        printf("\n> "); fflush(stdout);
+
+        (void)getline(&userInput, &bufferLen, stdin);
+        if((sscanf(userInput, "%lf", &result) > 0) &&
+           (low <= result && result <= high))
+            break;
+
+        free(userInput);
+        userInput = NULL;
+        bufferLen = 0;
+        printf("That was either not a float or not between %f and %f. Try again.\n", low, high); fflush(stdout);
     } while(1);
     free(userInput);
 
@@ -44,23 +74,17 @@ AbstractRNG31Core *getRNGCore()
 
     switch(rngCoreIndex) {
     case 1:
-        RNG31Core_GBFlip *gbFlipRNG = (RNG31Core_GBFlip*)malloc(sizeof(RNG31Core_GBFlip));
-        return gbFlip_initDefault(gbFlipRNG);
+        return gbFlip_initDefault((RNG31Core_GBFlip*)malloc(sizeof(RNG31Core_GBFlip)));
     case 2:
-        RNG31Core_LinearCongruential *linCongRNG = (RNG31Core_LinearCongruential*)malloc(sizeof(RNG31Core_LinearCongruential));
-        return linearCongruential_initDefault(linCongRNG);
+        return linearCongruential_initDefault((RNG31Core_LinearCongruential*)malloc(sizeof(RNG31Core_LinearCongruential)));
     case 3:
-        RNG31Core_Isaac *isaacRNG = (RNG31Core_Isaac*)malloc(sizeof(RNG31Core_Isaac));
-        return isaac_initDefault(isaacRNG);
+        return isaac_initDefault((RNG31Core_Isaac*)malloc(sizeof(RNG31Core_Isaac)));
     case 4:
-        RNG31Core_MersenneTwister *mtRNG = (RNG31Core_MersenneTwister*)malloc(sizeof(RNG31Core_MersenneTwister));
-        return mersenneTwister_initDefault(mtRNG);
+        return mersenneTwister_initDefault((RNG31Core_MersenneTwister*)malloc(sizeof(RNG31Core_MersenneTwister)));
     case 5:
-        RNG31Core_R250 *r250RNG = (RNG31Core_R250*)malloc(sizeof(RNG31Core_R250));
-        return r250_initDefault(r250RNG);
+        return r250_initDefault((RNG31Core_R250*)malloc(sizeof(RNG31Core_R250)));
     case 6:
-        RNG31Core_R250_R521 *r250r521RNG = (RNG31Core_R250_R521*)malloc(sizeof(RNG31Core_R250_R521));
-        return r250_r521_initDefault(r250r521RNG);
+        return r250_r521_initDefault((RNG31Core_R250_R521*)malloc(sizeof(RNG31Core_R250_R521)));
     };
 
     return NULL;

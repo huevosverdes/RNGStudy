@@ -24,7 +24,28 @@ def getUserInt(low, high, prompt, *args):
         except ValueError:
             pass
 
-        print("That was either not an integer or not between %d-%d. Try again.\n" % (low, high))
+        print("That was either not an integer or not between %d and %d. Try again.\n" % (low, high))
+
+    assert(low <= result and result <= high)
+    print("")
+    sys.stdout.flush()
+    return result
+
+
+def getUserFlt(low, high, prompt, *args):
+    result = 0
+    while True:
+        print(prompt % args)
+        text = input("> ")
+        try:
+            index = float(text)
+            if low <= index and index <= high:
+                result = index
+                break
+        except ValueError:
+            pass
+
+        print("That was either not an integer or not between %d and %d. Try again.\n" % (low, high))
 
     assert(low <= result and result <= high)
     print("")
@@ -84,7 +105,6 @@ def addSamplePoint(img, x, y):
 
 
 def writeBMPImage(img, fileNameFormat, *args):
-    fileName = fileNameFormat % args
-
+    fileName = (fileNameFormat % args) if args else fileNameFormat
     BMPWriter.write(fileName, img)
     print("Wrote File: %s" % (fileName,))

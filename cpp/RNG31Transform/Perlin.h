@@ -26,8 +26,8 @@ namespace RNG31
         void reset();
         void shuffle();
 
-        void fill(NoiseBuffer2D *buffer, double xScale, double yScale) const;
-        void layeredFill(NoiseBuffer2D *buffer, int layerCount, double layerScale, double signalAttenuation, double xScale, double yScale) const;
+        void fill(NoiseBuffer2D *buffer, double xScale, double yScale, double z=0.0) const;
+        void layeredFill(NoiseBuffer2D *buffer, int layerCount, double layerScale, double signalAttenuation, double xScale, double yScale, double z=0.0) const;
 
     private:
         const static uint8_t PERMUTATIONS[];

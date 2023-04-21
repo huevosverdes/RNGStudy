@@ -9,7 +9,7 @@ Vose::Vose(AbstractRNGCore *rng, const double *itemWeights, int itemCount) :
     m_probabilities = new double[itemCount];
     m_aliases = new int[itemCount];
 
-    double itemProbabilities[itemCount];
+    double *itemProbabilities = new double[itemCount];
     double sum = 0.0;
     for(int index = 0; index < m_itemCount; ++index)
         sum += itemWeights[index];
@@ -67,6 +67,8 @@ Vose::Vose(AbstractRNGCore *rng, const double *itemWeights, int itemCount) :
         m_probabilities[small.front()] = 1.0;
         small.pop();
     }
+
+    delete[] itemProbabilities;
 }
 
 Vose::~Vose()

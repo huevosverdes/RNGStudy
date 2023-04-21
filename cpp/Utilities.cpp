@@ -21,7 +21,37 @@ int getUserInt(int low, int high, const char *prompt, ...)
         free(userInput);
         userInput = NULL;
         bufferLen = 0;
-        printf("That was either not an integer or not between 1-3. Try again.\n"); fflush(stdout);
+        printf("That was either not an integer or not between %d and %d. Try again.\n", low, high); fflush(stdout);
+    } while(1);
+    free(userInput);
+
+    assert(low <= result && result <= high);
+    printf("\n");
+    return result;
+}
+
+double getUserFlt(double low, double high, const char *prompt, ...)
+{
+    double result;
+    char *userInput = NULL;
+    size_t bufferLen = 0;
+
+    do {
+        va_list args;
+        va_start(args, prompt);
+        vprintf(prompt, args);
+        va_end(args);
+        printf("\n> "); fflush(stdout);
+
+        (void)getline(&userInput, &bufferLen, stdin);
+        if((sscanf(userInput, "%lf", &result) > 0) &&
+           (low <= result && result <= high))
+            break;
+
+        free(userInput);
+        userInput = NULL;
+        bufferLen = 0;
+        printf("That was either not a float or not between %f and %f. Try again.\n", low, high); fflush(stdout);
     } while(1);
     free(userInput);
 

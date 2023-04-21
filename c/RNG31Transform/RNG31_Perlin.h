@@ -21,7 +21,7 @@ void rng31Perlin_init(RNG31_Perlin *perlin, RNG31_Uniform *urng);
 void rng31Perlin_reset(RNG31_Perlin *perlin);
 void rng31Perlin_shuffle(RNG31_Perlin *perlin);
 
-void rng31Perlin_fill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, double xScale, double yScale);
-void rng31Perlin_layeredFill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, int layerCount, int layerScale, double signalAttenuation, double xScale, double yScale);
+void rng31Perlin_fill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, double xScale, double yScale, double z);
+void rng31Perlin_layeredFill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, int layerCount, double layerScale, double signalAttenuation, double xScale, double yScale, double z);
 
 #endif /* __RNG31_PERLIN_H__ */

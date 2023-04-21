@@ -48,7 +48,13 @@ class Perlin:
         self.__easingMethod = Ease.SMOOTHERSTEP
         self.reset()
 
-    def fill(self, noise: NoiseBuffer2D, xScale, yScale):
+    def easingMethod(self):
+        return self.__easingMethod
+
+    def setEasingMethod(self, easingMethod):
+        self.__easingMethod = easingMethod
+
+    def fill(self, noise: NoiseBuffer2D, xScale, yScale, z=0.0):
         assert(noise is not None and isinstance(noise, NoiseBuffer2D))
         assert(xScale > 0.0)
         assert(yScale > 0.0)
@@ -59,12 +65,12 @@ class Perlin:
         for row in range(rowCount):
             scaledY = yScale * row / rowCount
             for col in range(colCount):
-                noise.set(row, col, self.sample(xScale * col / colCount, scaledY, 0.0))
+                noise.set(row, col, self.sample(xScale * col / colCount, scaledY, z))
 
         noise.normalize()
 
-    def layeredFill(self, noise: NoiseBuffer2D, layerCount, layerScale, signalAttenuation, xScale, yScale):
-        assert(noise is not None and isinstance(noise, NoiseBuffer))
+    def layeredFill(self, noise: NoiseBuffer2D, layerCount, layerScale, signalAttenuation, xScale, yScale, z=0.0):
+        assert(noise is not None and isinstance(noise, NoiseBuffer2D))
         assert(xScale > 0.0)
         assert(yScale > 0.0)
         signalFactor = 1.0 - signalAttenuation;
@@ -77,7 +83,7 @@ class Perlin:
         for row in range(rowCount):
             scaledY = yScale * row / rowCount
             for col in range(colCount):
-                noise.set(row, col, self.sample(xScale * col / colCount, scaledY, 0.0))
+                noise.set(row, col, self.sample(xScale * col / colCount, scaledY, z))
 
         # The rest of the iterations
         for iteration in range(1, layerCount):
@@ -90,7 +96,7 @@ class Perlin:
                     noise.set(
                         row, col,
                         (noise.at(row, col) +
-                         (signalStrength * self.sample(xScale * col / colCount, scaledY, 0.0), row, col)))
+                         (signalStrength * self.sample(xScale * col / colCount, scaledY, z))))
 
         noise.normalize()
 

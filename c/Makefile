@@ -1,5 +1,5 @@
 COMPILER = gcc
-FLAGS = -Wall -g --std=c99
+FLAGS = -Wall -g -pedantic --std=c99
 OBJS = AbstractRNG31Core.o            \
        RNG31Core_GBFlip.o             \
        RNG31Core_LinearCongruential.o \
@@ -18,7 +18,7 @@ OBJS = AbstractRNG31Core.o            \
        BMPWriter.o                    \
        Utilities.o
 
-all : test BuffonsNeedle MonteHall ChaosGame CoinToss UniformVsNormal PointsInACircle Shuffle
+all : test BuffonsNeedle MonteHall ChaosGame CoinToss UniformVsNormal PointsInACircle Shuffle Perlin
 	./test.exe
 
 # Tests/Examples
@@ -44,6 +44,9 @@ PointsInACircle : PointsInACircle.c $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
 Shuffle : Shuffle.c $(OBJS)
+	$(COMPILER) $(FLAGS) $^ -o $@.exe
+
+Perlin : Perlin.c $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
 # Misc

@@ -1,5 +1,5 @@
 COMPILER = g++
-FLAGS = -Wall -g --std=c++20
+FLAGS = -Wall -g -pedantic --std=c++20
 OBJS = AbstractRNGCore.o	\
        GBFlip.o				\
        LinearCongruential.o	\
@@ -18,7 +18,7 @@ OBJS = AbstractRNGCore.o	\
        BMPWriter.o          \
        Utilities.o
 
-all : test BuffonsNeedle MonteHall ChaosGame CoinToss UniformVsNormal PointsInACircle Shuffle
+all : test BuffonsNeedle MonteHall ChaosGame CoinToss UniformVsNormal PointsInACircle Shuffle Perlin
 	./test.exe
 
 # Tests/Examples
@@ -44,6 +44,9 @@ PointsInACircle : PointsInACircle.cpp $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
 Shuffle : Shuffle.cpp $(OBJS)
+	$(COMPILER) $(FLAGS) $^ -o $@.exe
+
+Perlin : Perlin.cpp $(OBJS)
 	$(COMPILER) $(FLAGS) $^ -o $@.exe
 
 # Misc

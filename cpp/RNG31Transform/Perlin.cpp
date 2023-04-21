@@ -60,7 +60,7 @@ void Perlin::shuffle()
         m_permutations[index + 256] = m_permutations[index];
 }
 
-void Perlin::fill(NoiseBuffer2D *buffer, double xScale, double yScale) const
+void Perlin::fill(NoiseBuffer2D *buffer, double xScale, double yScale, double z) const
 {
     uint32_t rowCount = buffer->height();
     uint32_t colCount = buffer->width();
@@ -71,13 +71,13 @@ void Perlin::fill(NoiseBuffer2D *buffer, double xScale, double yScale) const
     {
         double scaledY = yScale * row / rowCount;
         for(uint32_t col = 0; col < colCount; ++col)
-            buffer->set(row, col, sample(xScale * col / colCount, scaledY, 0.0));
+            buffer->set(row, col, sample(xScale * col / colCount, scaledY, z));
     }
 
     buffer->normalize();
 }
 
-void Perlin::layeredFill(NoiseBuffer2D *buffer, int layerCount, double layerScale, double signalAttenuation, double xScale, double yScale) const
+void Perlin::layeredFill(NoiseBuffer2D *buffer, int layerCount, double layerScale, double signalAttenuation, double xScale, double yScale, double z) const
 {
     double signalFactor = 1.0 - signalAttenuation;
     double signalStrength = 1.0;
@@ -91,7 +91,7 @@ void Perlin::layeredFill(NoiseBuffer2D *buffer, int layerCount, double layerScal
     for(int row = 0; row < rowCount; ++row) {
         double scaledY = yScale * row / rowCount;
         for(int col = 0; col < colCount; ++col)
-            buffer->set(row, col, sample(xScale * col / colCount, scaledY, 0.0));
+            buffer->set(row, col, sample(xScale * col / colCount, scaledY, z));
     }
 
     // The rest of the iterations
@@ -102,7 +102,7 @@ void Perlin::layeredFill(NoiseBuffer2D *buffer, int layerCount, double layerScal
         for(int row = 0; row < rowCount; ++row) {
             double scaledY = yScale * row / rowCount;
             for(int col = 0; col < colCount; ++col)
-                buffer->set(row, col, buffer->at(row, col) + signalStrength * sample(xScale * col / colCount, scaledY, 0.0));
+                buffer->set(row, col, buffer->at(row, col) + signalStrength * sample(xScale * col / colCount, scaledY, z));
         }
     }
 

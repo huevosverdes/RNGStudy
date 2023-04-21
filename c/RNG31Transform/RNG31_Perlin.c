@@ -48,7 +48,7 @@ void rng31Perlin_shuffle(RNG31_Perlin *perlin)
         perlin->permutations[index + 256] = perlin->permutations[index];
 }
 
-void rng31Perlin_fill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, double xScale, double yScale)
+void rng31Perlin_fill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, double xScale, double yScale, double z)
 {
     int rowCount = buffer->height;
     int colCount = buffer->width;
@@ -59,13 +59,13 @@ void rng31Perlin_fill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, double xScale
     {
         double scaledY = yScale * row / rowCount;
         for(int col = 0; col < colCount; ++col)
-            noiseBuffer2D_setValue(buffer, row, col, rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, 0.0));
+            noiseBuffer2D_setValue(buffer, row, col, rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, z));
     }
 
     noiseBuffer2D_normalize(buffer);
 }
 
-void rng31Perlin_layeredFill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, int layerCount, int layerScale, double signalAttenuation, double xScale, double yScale)
+void rng31Perlin_layeredFill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, int layerCount, double layerScale, double signalAttenuation, double xScale, double yScale, double z)
 {
     double signalFactor = 1.0 - signalAttenuation;
     double signalStrength = 1.0;
@@ -80,7 +80,7 @@ void rng31Perlin_layeredFill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, int la
     {
         double scaledY = yScale * row / rowCount;
         for(int col = 0; col < colCount; ++col)
-            noiseBuffer2D_setValue(buffer, row, col, rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, 0.0));
+            noiseBuffer2D_setValue(buffer, row, col, rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, z));
     }
 
     /* The rest of the iterations */
@@ -95,7 +95,7 @@ void rng31Perlin_layeredFill(RNG31_Perlin *perlin, NoiseBuffer2D *buffer, int la
             for(int col = 0; col < colCount; ++col)
                 noiseBuffer2D_setValue(
                     buffer, row, col,
-                    noiseBuffer2D_valueAt(buffer, row, col) + signalStrength * rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, 0.0));
+                    noiseBuffer2D_valueAt(buffer, row, col) + signalStrength * rng31Perlin_sample(perlin, xScale * col / colCount, scaledY, z));
         }
     }
 
